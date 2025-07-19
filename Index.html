@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wexaur Search - Independence Special</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      background-image: url('https://images.pexels.com/photos/14267136/pexels-photo-14267136.jpeg'); /* India Gate Tiranga style */
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      text-align: center;
+    }
+    .overlay {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 30px;
+      min-height: 100vh;
+    }
+    h1 {
+      font-size: 3em;
+      color: orange;
+    }
+    .banner {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      border: 2px solid orange;
+      border-radius: 10px;
+    }
+    input[type="text"] {
+      width: 60%;
+      padding: 10px;
+      font-size: 1.2em;
+      border-radius: 5px;
+      border: none;
+      margin-top: 10px;
+    }
+    select {
+      padding: 8px;
+      border-radius: 5px;
+      font-size: 1em;
+      margin-top: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+      border-radius: 5px;
+      margin-top: 15px;
+      background-color: #ff9933;
+      border: none;
+      cursor: pointer;
+    }
+    .result-box {
+      background-color: rgba(255, 255, 255, 0.2);
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      text-align: left;
+    }
+    .quote {
+      margin-top: 30px;
+      font-style: italic;
+      color: #fff7c2;
+    }
+    .reward {
+      font-size: 1.2em;
+      color: #00ffcc;
+    }
+    .unity {
+      margin-top: 15px;
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #00ffcc;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="banner">
+      🇮🇳 Happy Independence Day — 15 August 2025 🇮🇳
+    </div>
+    <h1>WEXAUR</h1>
+    <p><b>Smart Bharat Search</b></p>
+
+    <div class="unity">एक भारत श्रेष्ठ भारत</div>
+
+    <input type="text" id="query" placeholder="Search anything..." />
+    <br />
+    <select id="language">
+      <option value="en">English</option>
+      <option value="hi">Hindi</option>
+    </select>
+    <br />
+    <button onclick="searchWexaur()">Search</button>
+
+    <div class="reward" id="rewardCoins"></div>
+
+    <div class="quote">
+      “Give me blood, and I shall give you freedom.” – Netaji Subhas Chandra Bose
+    </div>
+
+    <div id="results" class="result-box"></div>
+    <div id="trending" class="result-box">
+      <h3>🔥 Trending Searches</h3>
+      <ul>
+        <li>India Independence Day</li>
+        <li>Chandrayaan 3</li>
+        <li>PM Modi Speech</li>
+        <li>Freedom Fighters</li>
+        <li>Indian Flag History</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    let coins = 0;
+
+    async function searchWexaur() {
+      const query = document.getElementById("query").value;
+      const lang = document.getElementById("language").value;
+      const resultBox = document.getElementById("results");
+      const rewardBox = document.getElementById("rewardCoins");
+      resultBox.innerHTML = '<b>Loading...</b>';
+
+      try {
+        // Wikipedia API
+        const wikiRes = await fetch(
+          `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`
+        );
+        const wikiData = await wikiRes.json();
+
+        // Joke API
+        const jokeRes = await fetch("https://official-joke-api.appspot.com/jokes/random");
+        const jokeData = await jokeRes.json();
+
+        coins += 5;
+        rewardBox.innerHTML = `🎉 You earned 5 Wex Coins! Total: ${coins}`;
+
+        resultBox.innerHTML = `
+          <h2>📚 Wikipedia Result</h2>
+          <p><b>${wikiData.title}</b><br>${wikiData.extract}</p>
+          <hr>
+          <h2>😂 Joke Time</h2>
+          <p>${jokeData.setup}<br><i>${jokeData.punchline}</i></p>
+        `;
+      } catch (error) {
+        resultBox.innerHTML = `<p style="color:red">❌ Error fetching data. Try again later.</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
